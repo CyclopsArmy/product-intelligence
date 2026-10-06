@@ -8,6 +8,32 @@ import {chromium} from 'playwright';
 import {startApp} from '../src/server.ts';
 import {capture} from './helpers.ts';
 
+test('late unauthorized responses from an old session cannot revoke a new session', {timeout:30000}, async()=>{
+ const app=await startApp({dbPath:':memory:',port:0});
+ let browser;const release=Promise.withResolvers<void>();
+ try{
+  browser=await chromium.launch({channel:process.env.PI_BROWSER_CHANNEL||undefined});
+  const page=await browser.newPage();page.setDefaultTimeout(5000);
+  const staleToken='b'.repeat(64),started=Promise.withResolvers<void>(),finished=Promise.withResolvers<void>();
+  let requests=0,responses=0;
+  page.on('requestfinished',request=>{if(request.headers().authorization==='Bearer '+staleToken&&++responses===3)finished.resolve();});
+  await page.route('**/api/**',async route=>{
+   if(route.request().headers().authorization==='Bearer '+staleToken){
+    if(++requests===3)started.resolve();await release.promise;
+    await route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({error:'AUTH_REQUIRED'})});
+   }else await route.continue();
+  });
+  await page.goto(app.url+'/#token='+staleToken);
+  await started.promise;
+  try{await page.goto(app.url+'/#token='+app.token);}catch{throw new Error('SESSION_NAVIGATION_FAILED');}
+  await page.getByRole('button',{name:'Load synthetic sample'}).waitFor();
+  release.resolve();await finished.promise;
+  await page.getByRole('button',{name:'Refresh',exact:true}).click();
+  await page.getByRole('button',{name:'Load synthetic sample'}).waitFor();
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('pi-session')!==null),true);
+ }finally{release.resolve();await browser?.close();await app.close();}
+});
+
 // All data is synthetic, browsers have fresh profiles, and artifacts stay private.
 test('rendered private workspace imports, reviews, filters, watches and recovers evidence', {timeout:90000}, async()=>{
  const dir=mkdtempSync(join(tmpdir(),'pi-browser-'));

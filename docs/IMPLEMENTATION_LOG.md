@@ -12,7 +12,9 @@ Privacy regression: staged Playwright HTML reports were accepted before the new 
 
 M1 ruling: one Best Buy product transport probe timed out; identified browser navigation failed with HTTP/2 protocol errors. Robots-policy fetches succeeded for all three retailers, but that is not evidence of working acquisition. Published API terms and scope present additional retention/permission constraints. Best Buy remains a conditional candidate; no real captures, guessed context, adapter, PostgreSQL or scheduler are claimed. Details and next acceptance gates are in `docs/ACQUISITION.md`.
 
-Local verification after fixes: 141 offline tests and the rendered browser workflow passed. Publication verification and independent review are recorded after their actual outcomes; synthetic tests remain distinct from live acquisition validation.
+Independent read-only review found one Important session race: a late 401 from an old request could delete a newly installed token. An actual Edge test delayed the old responses, opened the valid session, released the 401s and reproduced authentication loss on Refresh. Each request now captures its token and clears only that still-current token. The new test passed after the fix; the full suite passed 141 offline tests and two browser tests. The reviewer found no other material restore, privacy or CI issue. Its unjudged live acquisition, permissions and retention questions remain blocked as documented; they are not waived release gates.
+
+Post-review local verification: 141 offline tests, two rendered browser tests, 14 synthetic benchmark cases and zero privacy findings. Both author and committer use the repository-local account handle and requested GitHub noreply address. Hosted checks are tracked separately during publication; synthetic tests remain distinct from live acquisition validation.
 
 Plan: docs/superpowers/plans/2026-10-05-evidence-prototype.md
 
