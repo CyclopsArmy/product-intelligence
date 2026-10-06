@@ -18,3 +18,6 @@ Review scope rulings: live retailer acquisition/accuracy, browser/PostgreSQL/sch
 Rulings and operational limitations are documented in STATUS.md. No paid requests, deployment, real page capture or GitHub push has occurred.
 
 Final verification: npm test passed 99/99; synthetic benchmark matched 14/14 expected cases (4 accepted); privacy scan passed with zero findings. Manual source/history review found no personal-context terms; the email-shaped scanner match in a URL-credentials rejection test was verified as a generic synthetic example.
+# Publication verification
+
+The public source snapshot was published through GitHub's web UI after verifying the account's email privacy and absence of a personal display name. All 28 file hashes and modes matched the reviewed source. The first hosted workflow passed 102 tests, all 14 synthetic benchmark expectations, and the privacy check. All 24 initial public commit identities were reviewed and used only the account handle/GitHub noreply identities. GitHub Secret Protection and push protection were confirmed enabled. The privacy scanner was tightened to require name/noreply-handle agreement and permit the exact GitHub web committer; two regressions failed before the fix, and the full suite then passed. Independent review found no material regression.
