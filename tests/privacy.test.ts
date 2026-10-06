@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,rmSync,writeFileSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {execFileSync,spawnSync} from 'node:child_process';
@@ -34,3 +34,11 @@ test('privacy scan rejects a personal email even for the GitHub display name',()
  const r=scan();assert.equal(r.status,1);assert.match(r.stdout,/unapproved author metadata/);
 }));
 test('privacy scan rejects a staged logical backup outside ignored folders',()=>repo((dir,git,scan)=>{writeFileSync(join(dir,'research.pi-backup.json'),'{}');git('add','research.pi-backup.json');assert.equal(scan().status,1);}));
+
+test('privacy scan rejects browser reports, traces and alternate screenshot formats',()=>{
+ for(const path of ['playwright-report/index.html','test-results/session.txt','screen.jpeg','screen.webp','session.trace','recording.webm'])repo((dir,git,scan)=>{
+  if(path.includes('/'))mkdirSync(join(dir,path.split('/')[0]));
+  writeFileSync(join(dir,path),'synthetic private artifact');git('add',path);
+  const result=scan();assert.equal(result.status,1,path);assert.match(result.stdout,/private artifact path/);
+ });
+});

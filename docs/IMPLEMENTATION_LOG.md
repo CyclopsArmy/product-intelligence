@@ -1,5 +1,23 @@
 # Implementation ledger
 
+## October 6 desktop continuation
+
+Plan: `docs/superpowers/plans/2026-10-06-desktop-verification-m1.md`. Fresh clone of main at `a5fe3bc`; complete public history preserved. Dedicated branch; runtime data and machine configuration ignored. Node 24.19.0 / Python 3.12.14 / installed Edge with pinned Playwright 1.62.1.
+
+Baseline: 137/140 tests passed; all three failures were real Windows archive restores. Direct diagnosis found `EPERM` at `fsync` after opening staged SQLite read-only. A writable handle fixes those existing regressions; all nine archive cases passed afterward.
+
+Rendered QA first failed when navigating from the unauthenticated app to a session-fragment link in the same tab: initialization only consumed fragments during page load. Session links are now consumed on hash navigation too, with invalid fragments clearing the stored token. The end-to-end regression subsequently passed through synthetic filtering, correction/removal/restoration of history, JSON/HTML file imports, unknown evidence, target archive/restore, downloaded backup and a second app using the restored database. Desktop/mobile screenshots were inspected privately; no console errors or document overflow were observed. Test setup issues (select label matching, browser-normalized minute input, and intentionally strict synthetic provenance) were corrected without weakening application validation.
+
+Privacy regression: staged Playwright HTML reports were accepted before the new check. Reports, test result directories, traces, recordings and alternate screenshot formats are now ignored and rejected by the source/index/history scanner. Browser test artifacts stay in temporary directories; screenshots are opt-in and private.
+
+M1 ruling: one Best Buy product transport probe timed out; identified browser navigation failed with HTTP/2 protocol errors. Robots-policy fetches succeeded for all three retailers, but that is not evidence of working acquisition. Published API terms and scope present additional retention/permission constraints. Best Buy remains a conditional candidate; no real captures, guessed context, adapter, PostgreSQL or scheduler are claimed. Details and next acceptance gates are in `docs/ACQUISITION.md`.
+
+Independent read-only review found one Important session race: a late 401 from an old request could delete a newly installed token. An actual Edge test delayed the old responses, opened the valid session, released the 401s and reproduced authentication loss on Refresh. Each request now captures its token and clears only that still-current token. The new test passed after the fix; the full suite passed 141 offline tests and two browser tests. The reviewer found no other material restore, privacy or CI issue. Its unjudged live acquisition, permissions and retention questions remain blocked as documented; they are not waived release gates.
+
+Post-review local verification: 141 offline tests, two rendered browser tests, 14 synthetic benchmark cases and zero privacy findings. Both author and committer use the repository-local account handle and requested GitHub noreply address. Hosted checks are tracked separately during publication; synthetic tests remain distinct from live acquisition validation.
+
+Hosted verification: PR #4 head `7774494d269ea12c550d49188c7d51f25685525b` passed run `37543650117` on Ubuntu/Chromium and Windows/Edge. Both matrix jobs and the existing required `test` gate passed. The public branch contains no runtime artifacts; `.env`, databases and optional screenshots remain private. Final publication still requires checks on the latest head, with no branch-protection changes.
+
 Plan: docs/superpowers/plans/2026-10-05-evidence-prototype.md
 
 Pre-flight: core produces Capture/Evaluation; extractor produces Capture; store consumes validated Capture; CLI consumes all three. No incompatible interfaces found.

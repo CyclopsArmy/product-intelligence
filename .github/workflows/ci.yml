@@ -8,8 +8,13 @@ concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  test:
-    runs-on: ubuntu-24.04
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHON_BIN: python
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -20,7 +25,26 @@ jobs:
         with:
           node-version: '24'
           package-manager-cache: false
-      - run: python3 --version
+      - run: python --version
       - run: npm test
       - run: npm run benchmark
       - run: npm run privacy
+      - run: npm ci --ignore-scripts
+      - if: runner.os == 'Linux'
+        run: npx playwright install --with-deps chromium
+      - if: runner.os == 'Linux'
+        run: npm run test:browser
+      - if: runner.os == 'Windows'
+        run: npm run test:browser
+        env:
+          PI_BROWSER_CHANNEL: msedge
+  # Preserve the existing branch-protection check name and require both platforms.
+  test:
+    needs: verify
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - run: test "$VERIFY_RESULT" = success
+        env:
+          VERIFY_RESULT: ${{ needs.verify.result }}

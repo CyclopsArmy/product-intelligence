@@ -58,7 +58,8 @@ export function restoreArchive(input:unknown,path:string) {
   for(const t of body.targets)db.prepare('INSERT INTO watch_targets(id,url,label,target_minor,archived,created_at,updated_at) VALUES (?,?,?,?,?,?,?)').run(t.id,t.url,t.label,t.targetMinor,Number(t.archived),t.createdAt,t.updatedAt);
   if(db.prepare('PRAGMA integrity_check').get()!.integrity_check!=='ok')throw new Error('RESTORE_INTEGRITY_FAILED');
   db.close();db=undefined;store.close();store=undefined;
-  const fd=openSync(stagedPath,'r');try{fsyncSync(fd);}finally{closeSync(fd);}
+  // Windows FlushFileBuffers requires a writable handle, even after SQLite closes.
+  const fd=openSync(stagedPath,'r+');try{fsyncSync(fd);}finally{closeSync(fd);}
   occupied();linkSync(stagedPath,path); // Atomic, same-filesystem publication; never overwrites.
   return {restored:true,observations:body.observations.length,targets:body.targets.length};
  }catch(e){if(e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}
