@@ -53,6 +53,12 @@ The browser check launches a loopback app with a fresh private temporary SQLite 
 
 CI runs the offline suite and browser flow on Ubuntu/Chromium and Windows/Edge. The aggregate `test` job retains the existing required branch-protection check and fails unless both platforms pass. These checks do not contact retailers or establish live accuracy.
 
+### Development type checking
+
+After `npm ci --ignore-scripts`, run `npm run typecheck`. Pinned TypeScript 7.0.2 and Node 24 type definitions check every TypeScript file in `src/`, `scripts/`, and `tests/` with strict null/error/parameter checks. The configuration rejects syntax that Node cannot erase and requires type-only imports where appropriate. It emits no JavaScript and adds no application build step. Both CI platforms run this check.
+
+The browser JavaScript remains covered by syntax, controller, and rendered tests; `checkJs` is not enabled. Database row declarations describe known SQL projections over the local schema, not runtime validation of arbitrary databases. Existing explicit `any` and parsed JSON boundaries are not eliminated by strict mode; incoming captures still require the runtime validators and evidence engine.
+
 ```bash
 npm test
 npm run benchmark

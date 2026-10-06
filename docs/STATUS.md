@@ -35,7 +35,7 @@ The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI b
 - Live retailer acquisition: **not verified**. The desktop continuation attempted bounded feasibility probes; no live offers or retailer-wide success rates were measured. See the assessment above.
 - Retailer adapters: **not implemented**. JSON-LD parsing and the selected-offer interchange format are not retailer-specific adapters.
 - PostgreSQL, Docker, Crawlee and pg-boss scheduling: **not installed or tested** here. Edge browser validation is verified in the desktop continuation above.
-- Static TypeScript type checking: **not run**; Node's TypeScript stripping executes tests without checking types. Add a pinned compiler/lockfile once package installation is permitted.
+- Static TypeScript type checking: strict, no-emit checking is configured for `src/`, `scripts/`, and `tests/`, using pinned TypeScript 7.0.2 and Node 24 declarations. Node-compatible erasable syntax and type-only imports are enforced. Browser JavaScript and existing explicit `any` boundaries retain runtime-test coverage rather than a full static-safety claim.
 - Product/variant/listing relational catalog, cross-retailer matching persistence, pack-size and location-aware comparisons, retained raw evidence archive, alerts, discovery, paid providers and AI: later milestones. A local UI and logical backup/restore are implemented below.
 
 ## Continue with minimal setup

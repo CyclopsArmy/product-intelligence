@@ -17,7 +17,7 @@ test('two scoped channels accept',()=>{const r=evaluate(capture(),NOW);assert.eq
 test('same underlying origin does not count twice',()=>{const c=capture(); c.candidates[1]={...c.candidates[0]};assert.equal(evaluate(c,NOW).status,'uncertain');});
 test('conflicting price quarantines',()=>{const c=capture();c.candidates[1].price='799.99';const r=evaluate(c,NOW);assert.equal(r.status,'uncertain');assert.ok(r.reasons.includes('PRICE_CONFLICT'));});
 test('reference and financing never enter current price',()=>{const c=capture();c.candidates.push({...c.candidates[0],role:'reference',price:'1099.99'},{...c.candidates[0],role:'financing',price:'74.99'});assert.equal(evaluate(c,NOW).offer?.priceMinor,89999);});
-for (const field of ['seller','condition','availability','currency','eligibility','fulfillment']) test(`unknown ${field} quarantines`,()=>{const c=capture();for(const a of c.candidates) a[field]=null;assert.equal(evaluate(c,NOW).status,'uncertain');});
+for (const field of ['seller','condition','availability','currency','eligibility','fulfillment'] as const) test(`unknown ${field} quarantines`,()=>{const c=capture();for(const a of c.candidates) a[field]=null;assert.equal(evaluate(c,NOW).status,'uncertain');});
 test('unknown role cannot be hidden',()=>{const c=capture();c.candidates.push({...c.candidates[0],role:'unknown'});assert.equal(evaluate(c,NOW).status,'uncertain');});
 test('conditional offer quarantines',()=>{const c=capture();for(const a of c.candidates)a.eligibility='membership';assert.equal(evaluate(c,NOW).status,'uncertain');});
 test('other seller cannot corroborate',()=>{const c=capture();c.candidates[1].seller='Other Retail';assert.equal(evaluate(c,NOW).status,'uncertain');});
@@ -36,4 +36,4 @@ for(const [field,value] of [['gtin','012345678905'],['mpn','EX-28'],['model','DI
   const r=evaluate(c,NOW);assert.equal(r.status,'uncertain');assert.ok(r.reasons.includes('CANDIDATE_IDENTITY_CONFLICT'));
 });
 test('array provenance cannot launder a synthetic capture',()=>assert.equal(evaluate(capture({method:['synthetic-fixture'],synthetic:false}),NOW).status,'rejected'));
-test('array source cannot impersonate a channel',()=>{const c=capture();c.candidates[0].source=['jsonld'];assert.equal(evaluate(c,NOW).status,'rejected');});
+test('array source cannot impersonate a channel',()=>{const c=capture();const candidates=[{...c.candidates[0],source:['jsonld']},...c.candidates.slice(1)];assert.equal(evaluate({...c,candidates},NOW).status,'rejected');});

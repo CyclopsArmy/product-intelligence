@@ -48,7 +48,7 @@ function validateArchive(input:any) {
 }
 export function restoreArchive(input:unknown,path:string) {
  const body=validateArchive(input);if(path===':memory:')throw new Error('INVALID_DESTINATION');
- const occupied=()=>{for(const suffix of ['', '-wal', '-shm', '-journal']){try{lstatSync(path+suffix);}catch(e){if(e.code==='ENOENT')continue;throw e;}throw new Error('DESTINATION_EXISTS');}};
+ const occupied=()=>{for(const suffix of ['', '-wal', '-shm', '-journal']){try{lstatSync(path+suffix);}catch(e){if(e instanceof Error && 'code' in e && e.code==='ENOENT')continue;throw e;}throw new Error('DESTINATION_EXISTS');}};
  occupied();mkdirSync(dirname(path),{recursive:true,mode:0o700});
  const staging=mkdtempSync(join(dirname(path),'.pi-restore-')),stagedPath=join(staging,'restored.sqlite');
  let store:ObservationStore|undefined,db:DatabaseSync|undefined;
@@ -62,6 +62,6 @@ export function restoreArchive(input:unknown,path:string) {
   const fd=openSync(stagedPath,'r+');try{fsyncSync(fd);}finally{closeSync(fd);}
   occupied();linkSync(stagedPath,path); // Atomic, same-filesystem publication; never overwrites.
   return {restored:true,observations:body.observations.length,targets:body.targets.length};
- }catch(e){if(e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}
+ }catch(e){if(e instanceof Error && 'code' in e && e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}
  finally{db?.close();store?.close();rmSync(staging,{recursive:true,force:true});}
 }

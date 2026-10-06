@@ -1,11 +1,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {captureHtml} from '../src/extract.ts';
+import type {CaptureMetadata} from '../src/extract.ts';
 import {evaluate} from '../src/engine.ts';
 import {capture,NOW,product} from './helpers.ts';
 export const ld={ '@type':'Product',brand:{name:'Example'},model:product.model,mpn:product.mpn,gtin13:product.gtin,sku:product.variant,
   offers:{'@type':'Offer',price:'899.99',priceCurrency:'USD',seller:{name:'Example Retail'},itemCondition:'https://schema.org/NewCondition',availability:'https://schema.org/InStock'}};
-export const metadata={id:'html-001',url:capture().url,observedAt:NOW,sourceObservedAt:null,method:'synthetic-fixture',synthetic:true,context:capture().context};
+export const metadata:CaptureMetadata={id:'html-001',url:capture().url,observedAt:NOW,sourceObservedAt:null,method:'synthetic-fixture',synthetic:true,context:capture().context};
 test('JSON-LD extracts without inventing eligibility or fulfillment',()=>{const c=captureHtml(`<script type="application/ld+json">${JSON.stringify(ld)}</script>`,metadata);assert.equal(c.candidates.length,1);assert.equal(c.candidates[0].price,'899.99');assert.equal(c.candidates[0].eligibility,null);assert.equal(evaluate(c,NOW).status,'uncertain');});
 test('@graph resolves offer id',()=>{const offer={...ld.offers,'@id':'#offer'};const data={'@graph':[{...ld,offers:{'@id':'#offer'}},offer]};const c=captureHtml(`<script type='application/ld+json'>${JSON.stringify(data)}</script>`,metadata);assert.equal(c.candidates[0].price,'899.99');});
 test('bad JSON records issue',()=>{const c=captureHtml('<script type="application/ld+json">{bad}</script>',metadata);assert.ok(c.issues.includes('MALFORMED_JSONLD'));});
