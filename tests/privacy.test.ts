@@ -33,3 +33,4 @@ test('privacy scan rejects a personal email even for the GitHub display name',()
  git('commit','--allow-empty','--author=GitHub <example-person@example.com>','-m','bad identity');
  const r=scan();assert.equal(r.status,1);assert.match(r.stdout,/unapproved author metadata/);
 }));
+test('privacy scan rejects a staged logical backup outside ignored folders',()=>repo((dir,git,scan)=>{writeFileSync(join(dir,'research.pi-backup.json'),'{}');git('add','research.pi-backup.json');assert.equal(scan().status,1);}));
