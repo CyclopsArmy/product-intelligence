@@ -1,0 +1,1010 @@
+{
+  "provenance": "synthetic",
+  "evaluationTime": "2026-01-15T12:00:00.000Z",
+  "cases": [
+    {
+      "name": "scoped-agreement",
+      "split": "development",
+      "expectedStatus": "accepted",
+      "expectedPriceMinor": 89999,
+      "capture": {
+        "schemaVersion": 1,
+        "id": "scoped-agreement",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "price-conflict",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "price-conflict",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "799.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "same-origin",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "same-origin",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "unknown-seller",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "unknown-seller",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": null,
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": null,
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "conditional-membership",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "conditional-membership",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "membership",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "membership",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "reference-excluded",
+      "split": "development",
+      "expectedStatus": "accepted",
+      "expectedPriceMinor": 89999,
+      "capture": {
+        "schemaVersion": 1,
+        "id": "reference-excluded",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "1099.99",
+            "role": "reference",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "stale-source",
+      "split": "development",
+      "expectedStatus": "rejected",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "stale-source",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": "2026-01-01T12:00:00.000Z",
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "currency-mismatch",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "currency-mismatch",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "EUR",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "wrong-variant",
+      "split": "development",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "wrong-variant",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "white"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "heldout-used-offer",
+      "split": "held-out",
+      "expectedStatus": "accepted",
+      "expectedPriceMinor": 4995,
+      "capture": {
+        "schemaVersion": 1,
+        "id": "heldout-used-offer",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "used",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "used",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "49.95",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "used",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "49.95",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "heldout-financing-only",
+      "split": "held-out",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "heldout-financing-only",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "49.95",
+            "role": "financing",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "49.95",
+            "role": "financing",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "heldout-open-box-conflict",
+      "split": "held-out",
+      "expectedStatus": "uncertain",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "heldout-open-box-conflict",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "open-box",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "heldout-future-capture",
+      "split": "held-out",
+      "expectedStatus": "rejected",
+      "capture": {
+        "schemaVersion": 1,
+        "id": "heldout-future-capture",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-16T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "in-stock",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "heldout-preorder",
+      "split": "held-out",
+      "expectedStatus": "accepted",
+      "expectedPriceMinor": 89999,
+      "capture": {
+        "schemaVersion": 1,
+        "id": "heldout-preorder",
+        "url": "https://www.bestbuy.com/site/example/123.p",
+        "observedAt": "2026-01-15T12:00:00.000Z",
+        "sourceObservedAt": null,
+        "method": "synthetic-fixture",
+        "synthetic": true,
+        "context": {
+          "product": {
+            "brand": "Example",
+            "model": "DISPLAY-27",
+            "mpn": "EX-27",
+            "gtin": "4006381333931",
+            "variant": "black-single"
+          },
+          "seller": "Example Retail",
+          "condition": "new",
+          "eligibility": "public",
+          "fulfillment": "delivery"
+        },
+        "candidates": [
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "preorder",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "jsonld",
+            "origin": "structured",
+            "locator": "script[0].offers"
+          },
+          {
+            "product": {
+              "brand": "Example",
+              "model": "DISPLAY-27",
+              "mpn": "EX-27",
+              "gtin": "4006381333931",
+              "variant": "black-single"
+            },
+            "seller": "Example Retail",
+            "condition": "new",
+            "availability": "preorder",
+            "currency": "USD",
+            "price": "899.99",
+            "role": "current",
+            "eligibility": "public",
+            "fulfillment": "delivery",
+            "source": "selected-dom",
+            "origin": "rendered",
+            "locator": "[data-pi-selected-offer]"
+          }
+        ],
+        "issues": []
+      }
+    }
+  ]
+}
