@@ -6,7 +6,8 @@ const patterns=[/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,/\bgh[pousr]
 const forbidden=(path:string):boolean=>{
   const parts=path.split('/');
   return parts.some((part,i)=>part.startsWith('.env') && !(part==='.env.example' && i===parts.length-1))
-    || parts.some(part=>['data','captures','node_modules','reports'].includes(part))
+    || parts.some(part=>['data','captures','node_modules','reports','backups'].includes(part))
+    || /\.pi-backup\.json$/i.test(path)
     || /\.(?:sqlite|db|har|log|png|zip)(?:$|-)/.test(path);
 };
 const hits:string[]=[];
