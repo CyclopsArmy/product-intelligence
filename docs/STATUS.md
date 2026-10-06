@@ -14,18 +14,23 @@
 - `inspect` returns all correction events for an observation; bounded event pagination is needed before long-running deployment.
 - Benchmark held-out labels were separated from the original development cases, but the same implementation agent authored them. They are not independent human ground truth.
 
+## Verified publication
+- The reviewed 28-file source snapshot is published in a public GitHub repository; every published file hash and mode matched the reviewed source.
+- GitHub Actions run `37404691405`, for commit `c5af78b2f707667d86c22c6ee5daa0945565e273`, passed all 102 tests, 14 synthetic benchmark cases, and the privacy scan.
+- All 24 initial publication commits used the account handle with its GitHub `noreply` email and GitHub's web committer identity. No personal display name or personal email was used in those commits.
+- GitHub Secret Protection and push protection were verified enabled. These complement the local scanner; neither guarantees detection of every private value.
+- The original neutral development history remains on the local development branch and in the previously saved source bundle. Public history records the reviewed snapshot publication.
+
 ## Not verified or not implemented
 - Live retailer acquisition: **not performed**. This environment restricts outbound access; no retailer success rates or costs were measured.
 - Retailer adapters: **not implemented**. JSON-LD parsing and the selected-offer interchange format are not retailer-specific adapters.
 - PostgreSQL, Docker, Crawlee, browser binaries, pg-boss scheduling: **not installed or tested** here.
 - Static TypeScript type checking: **not run**; Node's TypeScript stripping executes tests without checking types. Add a pinned compiler/lockfile once package installation is permitted.
-- GitHub repository creation: **complete**. The public repository is accessible through the connected API. Source publication is in progress through the web UI with verified email privacy. CI execution and secret-scanning settings remain unverified until checked after publication.
 - Product/variant/listing relational catalog, cross-retailer matching persistence, pack-size and location-aware comparisons, private evidence archive, backup/restore, private UI, alerts, discovery, paid providers and AI: later milestones.
 
 ## Continue with minimal setup
-1. Finish publishing the reviewed source snapshot to the new public repository. The original neutral development history is retained in the saved source bundle; web publication has its own GitHub `noreply` history.
-2. Configure a development environment with Node 24, Python 3, PostgreSQL, and permitted package/browser-download/retailer domains. This is an access/environment change, not a plugin installation.
-3. Verify the published source snapshot and its public commit metadata, run CI, enable repository protections, and use the M1 acquisition plan below.
+1. Configure a development environment with Node 24, Python 3, PostgreSQL, and permitted package/browser-download/retailer domains. This is an access/environment change, not a plugin installation.
+2. Preserve the publication privacy checks and verify CI on future branches; use the M1 acquisition plan below before live acquisition.
 
 ## M1 acquisition plan
 - Obtain explicit permitted networking and review configured retailer access policy before requests.
