@@ -58,3 +58,10 @@
 - No paid requests, retailer requests, public deployment, scheduler, or notifications were enabled.
 
 Local verification for the private app: 140 tests, 14 synthetic benchmark expectations, JavaScript syntax checks, and a zero-finding source/history privacy scan. Independent review findings were fixed with targeted regressions, including legacy capture recovery, large archive encoding and stale detail responses. Hosted CI for this increment is checked separately during publication.
+
+## Private app publication verified
+- Pull request #2 merged the private application into `main` at `c582021801a50ca1c2e74ef4f5f2fb0ba3be619e`.
+- The full 46-file published source tree matched the reviewed local source byte-for-byte, including file modes.
+- The nine publication commits and merge commit use the account handle and GitHub `noreply` identity; GitHub verified their signatures.
+- Pull-request run `37537481227` and merged-main run `37537607950` passed the required test job: 140 tests, 14 synthetic benchmark expectations, and the source/history privacy scan.
+- The app remains local-only. Retailer acquisition, production persistence and rendered browser validation retain the limitations above.

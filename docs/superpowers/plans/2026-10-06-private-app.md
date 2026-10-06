@@ -54,5 +54,5 @@ Files: web/index.html, web/styles.css, web/app.js, web/view.js, tests/view.test.
 
 ### Final review and publication
 - [x] Fresh independent whole-branch review; fix material findings with regression tests.
-- [ ] Publish reviewed source through privacy-safe commits; open and merge PR after required checks pass.
-- [ ] Verify main CI, repository source identity and privacy; continue with any feasible remaining work.
+- [x] Publish reviewed source through privacy-safe commits; open and merge PR after required checks pass. Completed in PR #2.
+- [x] Verify main CI, repository source identity and privacy; continue with any feasible remaining work. Main run 37537607950 passed; remaining environment-dependent checks are recorded in docs/STATUS.md.
