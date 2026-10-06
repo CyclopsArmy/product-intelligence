@@ -11,7 +11,7 @@ import type {Status,Capture,Evaluation} from './types.ts';
 
 function stable(v:unknown):string {
   if(Array.isArray(v))return '['+v.map(stable).join(',')+']';
-  if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';
+  if(v&&typeof v==='object')return '{'+Object.entries(v).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,value])=>JSON.stringify(k)+':'+stable(value)).join(',')+'}';
   return JSON.stringify(v);
 }
 export class ObservationStore {

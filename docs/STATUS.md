@@ -1,6 +1,12 @@
 # Status and continuation
 
-## Current continuation — October 6 desktop verification
+## Current continuation — strict development type checking
+
+Pull request [#5](https://github.com/CyclopsArmy/product-intelligence/pull/5) adds pinned, strict no-emit checking for all 27 TypeScript files in `src/`, `scripts/`, and `tests/`, enforced on both CI platforms through the existing protected `test` job. The initial compiler errors in startup options, filesystem errors, query projections/cursors, and test helpers are resolved without changing the evidence acceptance rules. Fresh locked installation and a negative compiler probe also passed their checks. Local verification passed 141 offline tests, two rendered Edge tests, 14 synthetic benchmark cases, and the source/history privacy scan. Independent review found no actionable issues; hosted checks must pass for the final head before merge.
+
+Browser JavaScript and existing explicit `any`/JSON boundaries remain documented limits of static checking. M1 acquisition remains blocked before a working adapter; this maintenance increment does not establish live accuracy or advance the PostgreSQL/scheduling gates.
+
+## October 6 desktop verification
 
 The dedicated Windows checkout preserves the complete published Git history. Node 24.19.0 and Python 3.12.14 satisfy the runtime requirements. Project-local ignored `.env` settings select Python and Edge; no global tool or account settings were changed.
 
@@ -35,7 +41,6 @@ The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI b
 - Live retailer acquisition: **not verified**. The desktop continuation attempted bounded feasibility probes; no live offers or retailer-wide success rates were measured. See the assessment above.
 - Retailer adapters: **not implemented**. JSON-LD parsing and the selected-offer interchange format are not retailer-specific adapters.
 - PostgreSQL, Docker, Crawlee and pg-boss scheduling: **not installed or tested** here. Edge browser validation is verified in the desktop continuation above.
-- Static TypeScript type checking: **not run**; Node's TypeScript stripping executes tests without checking types. Add a pinned compiler/lockfile once package installation is permitted.
 - Product/variant/listing relational catalog, cross-retailer matching persistence, pack-size and location-aware comparisons, retained raw evidence archive, alerts, discovery, paid providers and AI: later milestones. A local UI and logical backup/restore are implemented below.
 
 ## Continue with minimal setup

@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {execFileSync,spawnSync} from 'node:child_process';
 const script=resolve('scripts/privacy-check.ts');
-function repo(fn) {
+function repo(fn:(dir:string,git:(...args:string[])=>string,scan:()=>import('node:child_process').SpawnSyncReturns<string>)=>void) {
  const dir=mkdtempSync(join(tmpdir(),'pi-privacy-'));
  const git=(...args:string[])=>execFileSync('git',args,{cwd:dir,encoding:'utf8',stdio:'pipe'});
  try{git('init','-b','test');git('config','user.name','Project Maintainers');git('config','user.email','maintainers@example.invalid');git('commit','--allow-empty','-m','test');fn(dir,git,()=>spawnSync(process.execPath,[script],{cwd:dir,encoding:'utf8'}));}

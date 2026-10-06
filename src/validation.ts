@@ -68,7 +68,7 @@ export function validateCapture(input:unknown,now:string):Capture {
     if(typeof c.role!=='string' || typeof c.locator!=='string')throw new Error('INVALID_EVIDENCE');
     if(c.price!==null && typeof c.price!=='number' && typeof c.price!=='string')throw new Error('INVALID_PRICE');
     if(typeof c.price==='string' && c.price.length>80)throw new Error('INVALID_PRICE');
-    const origins={'jsonld':'structured','selected-dom':'rendered','api':'upstream'};
+    const origins:Record<string,string>={'jsonld':'structured','selected-dom':'rendered','api':'upstream'};
     if(typeof c.source!=='string' || typeof c.origin!=='string' || !Object.hasOwn(origins,c.source) || origins[c.source]!==c.origin)throw new Error('INVALID_ORIGIN');
   }
   return input as unknown as Capture;

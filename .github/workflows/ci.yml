@@ -30,6 +30,7 @@ jobs:
       - run: npm run benchmark
       - run: npm run privacy
       - run: npm ci --ignore-scripts
+      - run: npm run typecheck
       - if: runner.os == 'Linux'
         run: npx playwright install --with-deps chromium
       - if: runner.os == 'Linux'

@@ -41,7 +41,7 @@ function main() {
   if(command==='decide'){required('status');required('reason');}
   const store=new ObservationStore(typeof options.db==='string'?options.db:'data/observations.sqlite');
   try {
-    if(command==='backup'){const data=store.exportArchive();try{writeFileSync(required('file'),JSON.stringify(data),{flag:'wx',mode:0o600});}catch(e){if(e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}return {saved:true,observations:data.observations.length,targets:data.targets.length};}
+    if(command==='backup'){const data=store.exportArchive();try{writeFileSync(required('file'),JSON.stringify(data),{flag:'wx',mode:0o600});}catch(e){if(e instanceof Error && 'code' in e && e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}return {saved:true,observations:data.observations.length,targets:data.targets.length};}
     if(command.startsWith('import-'))return {...store.ingest(input,now),evaluationTime:now,historicalReplay:!!options.at};
     if(command==='inspect'){const pageNumber=(key:string)=>{if(options[key]===undefined)return undefined;const raw=required(key);if(!/^[1-9][0-9]*$/.test(raw))throw new Error('INVALID_ARGUMENT');return Number(raw);};return store.inspect(required('id'),{after:pageNumber('after'),limit:pageNumber('limit')});}
     if(command==='history')return store.history({includeSynthetic:options['include-synthetic']===true});
