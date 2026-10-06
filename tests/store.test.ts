@@ -1,0 +1,23 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
+import {ObservationStore} from '../src/store.ts';
+import {capture,NOW} from './helpers.ts';
+function withStore(fn) {const dir=mkdtempSync(join(tmpdir(),'pi-store-'));const path=join(dir,'test.sqlite');const store=new ObservationStore(path);try{fn(store,path);}finally{store.close();rmSync(dir,{recursive:true,force:true});}}
+test('persists actual observation and excludes synthetic by default',()=>withStore(s=>{s.ingest(capture(),NOW);assert.equal(s.inspect('fixture-001').evaluation.status,'accepted');assert.equal(s.history().length,0);assert.equal(s.history({includeSynthetic:true})[0].lowestObservedMinor,89999);}));
+test('duplicate import idempotent',()=>withStore(s=>{s.ingest(capture(),NOW);s.ingest(capture(),NOW);assert.equal(s.history({includeSynthetic:true})[0].sampleCount,1);}));
+test('conflicting capture ID refused',()=>withStore(s=>{s.ingest(capture(),NOW);const c=capture();c.candidates[0].price='800';assert.throws(()=>s.ingest(c,NOW),/CAPTURE_ID_CONFLICT/);assert.equal(s.inspect(c.id).capture.candidates[0].price,'899.99');}));
+test('key order does not defeat idempotency',()=>withStore(s=>{const c=capture();s.ingest(c,NOW);const reverse=Object.fromEntries(Object.entries(c).reverse());assert.doesNotThrow(()=>s.ingest(reverse,NOW));}));
+test('invalid capture does not persist',()=>withStore(s=>{assert.throws(()=>s.ingest(capture({url:'https://localhost'}),NOW));assert.throws(()=>s.inspect('fixture-001'),/NOT_FOUND/);}));
+test('original observations and decisions cannot update or delete',()=>withStore((s,path)=>{s.ingest(capture(),NOW);const db=new DatabaseSync(path);try{for(const sql of ["UPDATE observations SET payload='{}'","DELETE FROM observations","UPDATE decisions SET status='rejected'","DELETE FROM decisions"])assert.throws(()=>db.exec(sql),/IMMUTABLE/);}finally{db.close();}}));
+test('quarantine correction excludes then accepted restoration includes',()=>withStore(s=>{s.ingest(capture(),NOW);s.decide('fixture-001','uncertain','RECHECK_REQUIRED');assert.equal(s.history({includeSynthetic:true}).length,0);s.decide('fixture-001','accepted','RECHECK_CONFIRMED');assert.equal(s.history({includeSynthetic:true}).length,1);assert.equal(s.inspect('fixture-001').decisions.length,3);}));
+test('uncertain original cannot be manually accepted',()=>withStore(s=>{const c=capture();c.candidates.pop();s.ingest(c,NOW);assert.throws(()=>s.decide(c.id,'accepted','OVERRIDE'),/ORIGINAL_NOT_ACCEPTED/);}));
+test('correction reason cannot contain arbitrary private text',()=>withStore(s=>{s.ingest(capture(),NOW);assert.throws(()=>s.decide('fixture-001','uncertain','contact me at someone@example.com'),/INVALID_REASON/);}));
+test('seller and condition histories remain separate',()=>withStore(s=>{s.ingest(capture(),NOW);const c=capture({id:'other-offer'});c.context.seller='Other Retail';for(const a of c.candidates)a.seller='Other Retail';s.ingest(c,NOW);assert.equal(s.history({includeSynthetic:true}).length,2);}));
+test('history sorts by observed time not insertion',()=>withStore(s=>{const later=capture({id:'later',observedAt:'2026-01-15T13:00:00.000Z'});for(const a of later.candidates)a.price='799.99';s.ingest(later,'2026-01-15T13:00:00.000Z');s.ingest(capture(),NOW);const h=s.history({includeSynthetic:true})[0];assert.equal(h.latestObservedMinor,79999);assert.equal(h.highestObservedMinor,89999);assert.equal(h.sampleCount,2);}));
+test('non-purchasable evidence not current purchasing history',()=>withStore(s=>{const c=capture();for(const a of c.candidates)a.availability='out-of-stock';s.ingest(c,NOW);assert.equal(s.history({includeSynthetic:true}).length,0);assert.equal(s.inspect(c.id).evaluation.offer.purchasable,false);}));
+test('separate connections preserve idempotency',()=>withStore((s,path)=>{const other=new ObservationStore(path);try{s.ingest(capture(),NOW);other.ingest(capture(),NOW);assert.equal(other.history({includeSynthetic:true})[0].sampleCount,1);}finally{other.close();}}));
+test('unknown schema version refused',()=>{const dir=mkdtempSync(join(tmpdir(),'pi-schema-'));const path=join(dir,'bad.sqlite');const db=new DatabaseSync(path);db.exec('PRAGMA user_version=99');db.close();try{assert.throws(()=>new ObservationStore(path),/UNSUPPORTED_DATABASE_VERSION/);}finally{rmSync(dir,{recursive:true,force:true});}});
