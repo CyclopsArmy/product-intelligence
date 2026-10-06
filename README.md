@@ -52,7 +52,7 @@ Read [SECURITY.md](SECURITY.md) before publishing. Run `npm run privacy` from a 
 
 The original development history uses a neutral project identity with an intentionally non-deliverable example email. Web publication uses the account's verified GitHub `noreply` address and account handle; GitHub may sign those commits with its own web committer identity. The scanner rejects personal display names even when paired with a `noreply` email. Inspect public metadata before future uploads. No account settings have been changed by this source package.
 
-The GitHub workflow runs offline tests and synthetic benchmarks on standard Ubuntu runners with read-only permissions. It neither deploys nor receives application secrets. Local execution has been verified; GitHub-hosted CI cannot be claimed successful until the workflow runs in a repository.
+The GitHub workflow runs offline tests and synthetic benchmarks on standard Ubuntu runners with read-only permissions. It neither deploys nor receives application secrets. Local execution and the first GitHub-hosted CI run both passed: 102 tests, 14 synthetic benchmark cases, and the source/history privacy scan. See [status](docs/STATUS.md) for the publication verification record.
 
 ## Project files
 
