@@ -11,7 +11,7 @@ User-directed continuation of the existing private-app and evidence specificatio
 - [x] Assess official API and public access feasibility for the three target retailers. Record source links, timestamped failures, unknowns and the conditional retailer selection in `docs/ACQUISITION.md`.
 - [ ] Verify a permitted live source, validate real examples and implement the first adapter. Blocked on usable access/permission and compatible retention; no speculative client is shipped.
 - [ ] Advance PostgreSQL then scheduling only after the preceding live-acquisition gate passes.
-- [ ] Independently review the complete diff, run tests/benchmark/privacy, inspect source and commit metadata, open a PR and merge only after required checks pass.
+- [x] Independently review the complete diff, fix the session-race finding with a failing-then-passing regression, run tests/benchmark/privacy, inspect source and commit metadata, and open PR #4. Hosted run `37543650117` passed both platforms. Publication policy: merge only after required checks pass on the latest head.
 
 ## Interface review
 

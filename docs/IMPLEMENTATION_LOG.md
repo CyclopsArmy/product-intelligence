@@ -16,6 +16,8 @@ Independent read-only review found one Important session race: a late 401 from a
 
 Post-review local verification: 141 offline tests, two rendered browser tests, 14 synthetic benchmark cases and zero privacy findings. Both author and committer use the repository-local account handle and requested GitHub noreply address. Hosted checks are tracked separately during publication; synthetic tests remain distinct from live acquisition validation.
 
+Hosted verification: PR #4 head `7774494d269ea12c550d49188c7d51f25685525b` passed run `37543650117` on Ubuntu/Chromium and Windows/Edge. Both matrix jobs and the existing required `test` gate passed. The public branch contains no runtime artifacts; `.env`, databases and optional screenshots remain private. Final publication still requires checks on the latest head, with no branch-protection changes.
+
 Plan: docs/superpowers/plans/2026-10-05-evidence-prototype.md
 
 Pre-flight: core produces Capture/Evaluation; extractor produces Capture; store consumes validated Capture; CLI consumes all three. No incompatible interfaces found.

@@ -8,7 +8,7 @@ The fresh baseline passed 137/140 tests, with three Windows restore failures (`f
 
 M1 has begun but is **blocked before a working adapter**. Policy endpoints were reachable; the Best Buy product HTTP check timed out and Edge failed with `ERR_HTTP2_PROTOCOL_ERROR`. Best Buy is the conditional first candidate, with API credentials and retention compatibility unresolved. Amazon's standard price-tracking restrictions and Newegg's seller API scope preclude treating them as ready alternatives. No real offer was validated. See [the timestamped assessment and acceptance plan](ACQUISITION.md). Production PostgreSQL, scheduling and alerts remain gated future work.
 
-The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI behind the unchanged required `test` check. Hosted checks and review are verified separately during publication. Historical verification records below retain their original scope.
+The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI behind the unchanged required `test` check. Independent review is complete and its Important session-race finding was fixed with a failing-then-passing Edge regression. Pull request #4 run `37543650117`, for head `7774494d269ea12c550d49188c7d51f25685525b`, passed Ubuntu/Chromium and Windows/Edge, including 141 offline tests, two browser tests, 14 synthetic cases and privacy scans; the required aggregate `test` also passed. Any subsequent commit must pass the required checks again before merge. Historical verification records below retain their original scope.
 
 ## Implemented locally
 - Written specification and scoped implementation plan.
