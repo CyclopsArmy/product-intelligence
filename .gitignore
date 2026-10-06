@@ -1,0 +1,15 @@
+node_modules/
+.env*
+!.env.example
+data/
+captures/
+reports/
+*.sqlite*
+*.db*
+*.log
+*.har
+*.png
+*.zip
+__pycache__/
+.superpowers/
+.worktrees/
