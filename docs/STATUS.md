@@ -1,5 +1,15 @@
 # Status and continuation
 
+## Current continuation — October 6 desktop verification
+
+The dedicated Windows checkout preserves the complete published Git history. Node 24.19.0 and Python 3.12.14 satisfy the runtime requirements. Project-local ignored `.env` settings select Python and Edge; no global tool or account settings were changed.
+
+The fresh baseline passed 137/140 tests, with three Windows restore failures (`fsync` on a read-only handle). Those failures are fixed using a writable staging handle; immutable evidence and atomic no-overwrite publication remain intact. Current local verification: **141 offline tests, one full rendered browser workflow, 14 synthetic benchmark cases**. The browser flow covers all requested workflows, a downloaded archive restored into a second app, and 1440×1000 / 390×844 layouts. No app console errors or document overflow were observed. Synthetic screenshots stayed outside Git. This supersedes the earlier cloud-only browser blocker; it does not establish other-browser/accessibility certification or live retailer accuracy.
+
+M1 has begun but is **blocked before a working adapter**. Policy endpoints were reachable; the Best Buy product HTTP check timed out and Edge failed with `ERR_HTTP2_PROTOCOL_ERROR`. Best Buy is the conditional first candidate, with API credentials and retention compatibility unresolved. Amazon's standard price-tracking restrictions and Newegg's seller API scope preclude treating them as ready alternatives. No real offer was validated. See [the timestamped assessment and acceptance plan](ACQUISITION.md). Production PostgreSQL, scheduling and alerts remain gated future work.
+
+The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI behind the unchanged required `test` check. Hosted checks and review are verified separately during publication. Historical verification records below retain their original scope.
+
 ## Implemented locally
 - Written specification and scoped implementation plan.
 - Strict USD/identity/context/freshness validation and reason-coded evidence decisions.
@@ -22,7 +32,7 @@
 - The original neutral development history remains on the local development branch and in the previously saved source bundle. Public history records the reviewed snapshot publication.
 
 ## Not verified or not implemented
-- Live retailer acquisition: **not performed**. This environment restricts outbound access; no retailer success rates or costs were measured.
+- Live retailer acquisition: **not verified**. The desktop continuation attempted bounded feasibility probes; no live offers or retailer-wide success rates were measured. See the assessment above.
 - Retailer adapters: **not implemented**. JSON-LD parsing and the selected-offer interchange format are not retailer-specific adapters.
 - PostgreSQL, Docker, Crawlee, browser binaries, pg-boss scheduling: **not installed or tested** here.
 - Static TypeScript type checking: **not run**; Node's TypeScript stripping executes tests without checking types. Add a pinned compiler/lockfile once package installation is permitted.

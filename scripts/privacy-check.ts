@@ -6,9 +6,9 @@ const patterns=[/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,/\bgh[pousr]
 const forbidden=(path:string):boolean=>{
   const parts=path.split('/');
   return parts.some((part,i)=>part.startsWith('.env') && !(part==='.env.example' && i===parts.length-1))
-    || parts.some(part=>['data','captures','node_modules','reports','backups'].includes(part))
+    || parts.some(part=>['data','captures','node_modules','reports','backups','playwright-report','test-results'].includes(part))
     || /\.pi-backup\.json$/i.test(path)
-    || /\.(?:sqlite|db|har|log|png|zip)(?:$|-)/.test(path);
+    || /\.(?:sqlite|db|har|log|png|jpe?g|webp|webm|trace|zip)(?:$|-)/i.test(path);
 };
 const hits:string[]=[];
 function scan(label:string,body:string){if(patterns.some(p=>p.test(body)))hits.push(label+': potential credential');}

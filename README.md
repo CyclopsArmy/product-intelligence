@@ -35,7 +35,23 @@ Both commands refuse to overwrite existing destination files. Restore validates 
 
 ## Run without downloading dependencies
 
-Requires Node.js **24.12 or newer within version 24** and Python **3.10+**. Node executes the TypeScript directly; there is no build step and no npm package installation. Python is only needed for HTML parsing/tests. On Windows, set `PYTHON_BIN=python` if `python3` is unavailable. Node's built-in SQLite API is used only for this prototype.
+Requires Node.js **24.12 or newer within version 24** and Python **3.10+**. Node executes the TypeScript directly; the runtime has no build step or npm dependency installation. Python is only needed for HTML parsing/tests. On Windows, set `PYTHON_BIN=python` if `python3` is unavailable. Node's built-in SQLite API is used only for this prototype.
+
+For persistent project-local settings, copy `.env.example` to the ignored `.env` and set `PYTHON_BIN` to your Python executable. `npm start`, `npm test`, `npm run cli`, and `npm run test:browser` load it; existing process environment values take precedence. Keep absolute machine paths and credentials out of tracked files. The runtime and offline suite still need no npm dependencies.
+
+### Optional rendered browser verification
+
+```bash
+npm ci --ignore-scripts
+npx playwright install chromium
+npm run test:browser
+```
+
+Alternatively, set `PI_BROWSER_CHANNEL=msedge` in `.env` to use an installed Microsoft Edge browser without a browser download. Remove that setting to use Playwright's Chromium. Playwright 1.62.1 is pinned as a development-only dependency (Apache-2.0); no third-party code was copied into the application.
+
+The browser check launches a loopback app with a fresh private temporary SQLite database and a fresh browser profile. It exercises session-link navigation, synthetic filtering, JSON/HTML imports, corrections, exact-offer history, targets, backup download and CLI restore into a second running app. It checks all six views at a mobile viewport as well. Data and downloads are deleted after the test. No traces, reports or screenshots are saved by default. Optional `PI_SCREENSHOT_DIR` must point outside the public checkout; screenshots contain synthetic data but must still remain private.
+
+CI runs the offline suite and browser flow on Ubuntu/Chromium and Windows/Edge. The aggregate `test` job retains the existing required branch-protection check and fails unless both platforms pass. These checks do not contact retailers or establish live accuracy.
 
 ```bash
 npm test
@@ -81,7 +97,7 @@ Read [SECURITY.md](SECURITY.md) before publishing. Run `npm run privacy` from a 
 
 The original development history uses a neutral project identity with an intentionally non-deliverable example email. Web publication uses the account's verified GitHub `noreply` address and account handle; GitHub may sign those commits with its own web committer identity. The scanner rejects personal display names even when paired with a `noreply` email. Inspect public metadata before future uploads. No account settings have been changed by this source package.
 
-The GitHub workflow runs offline tests and synthetic benchmarks on standard Ubuntu runners with read-only permissions. It neither deploys nor receives application secrets. Local execution and the first GitHub-hosted CI run both passed: 102 tests, 14 synthetic benchmark cases, and the source/history privacy scan. See [status](docs/STATUS.md) for the publication verification record.
+The GitHub workflow runs offline tests, synthetic benchmarks, privacy checks and local browser checks on standard runners with read-only permissions. It neither deploys nor receives application secrets. See [status](docs/STATUS.md) for current verification and [the acquisition assessment](docs/ACQUISITION.md) for live-source blockers.
 
 ## Project files
 

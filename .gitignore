@@ -15,3 +15,10 @@ __pycache__/
 .worktrees/
 backups/
 *.pi-backup.json
+playwright-report/
+test-results/
+*.jpg
+*.jpeg
+*.webp
+*.webm
+*.trace
