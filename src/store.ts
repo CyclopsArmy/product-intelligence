@@ -1,4 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
+import {exportArchive} from './archive.ts';
+import * as queries from './queries.ts';
+import * as watchlist from './watchlist.ts';
 import {mkdirSync,existsSync,chmodSync} from 'node:fs';
 import {dirname} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -19,7 +22,7 @@ export class ObservationStore {
     this.#db=new DatabaseSync(path);
     if(fresh && path!==':memory:')chmodSync(path,0o600);
     const version=this.#db.prepare('PRAGMA user_version').get()!.user_version;
-    if(version!==0 && version!==1){this.#db.close();throw new Error('UNSUPPORTED_DATABASE_VERSION');}
+    if(version!==0 && version!==1 && version!==2){this.#db.close();throw new Error('UNSUPPORTED_DATABASE_VERSION');}
     this.#db.exec(`PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL;
       CREATE TABLE IF NOT EXISTS observations (
         id TEXT PRIMARY KEY, content_hash TEXT NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)),
@@ -39,6 +42,9 @@ export class ObservationStore {
       CREATE TRIGGER IF NOT EXISTS decisions_no_update BEFORE UPDATE ON decisions BEGIN SELECT RAISE(ABORT,'IMMUTABLE_DECISION'); END;
       CREATE TRIGGER IF NOT EXISTS decisions_no_delete BEFORE DELETE ON decisions BEGIN SELECT RAISE(ABORT,'IMMUTABLE_DECISION'); END;
       PRAGMA user_version=1;`);
+    this.#db.exec(`BEGIN IMMEDIATE;
+      CREATE TABLE IF NOT EXISTS watch_targets(id TEXT PRIMARY KEY,url TEXT UNIQUE NOT NULL,label TEXT NOT NULL,target_minor INTEGER CHECK(target_minor>0),archived INTEGER NOT NULL CHECK(archived IN(0,1)),created_at TEXT NOT NULL,updated_at TEXT NOT NULL) STRICT;
+      PRAGMA user_version=2; COMMIT;`);
   }
   ingest(input:unknown,now:string) {
     const capture=validateCapture(input,now);
@@ -57,11 +63,11 @@ export class ObservationStore {
       return {id:capture.id,duplicate:!!existing,evaluation};
     }catch(e){this.#db.exec('ROLLBACK');throw e;}
   }
-  inspect(id:string) {
+  inspect(id:string,options:queries.PageOptions={}) {
     const row=this.#db.prepare('SELECT payload,evaluation FROM observations WHERE id=?').get(id);
     if(!row)throw new Error('NOT_FOUND');
     return {capture:JSON.parse(String(row.payload)) as Capture,evaluation:JSON.parse(String(row.evaluation)) as Evaluation,
-      decisions:this.#db.prepare('SELECT sequence,status,reason,decided_at AS decidedAt FROM decisions WHERE observation_id=? ORDER BY sequence').all(id)};
+      ...queries.decisions(this.#db,id,options)};
   }
   decide(id:string,status:Status,reason:string) {
     if(!['accepted','uncertain','rejected'].includes(status))throw new Error('INVALID_STATUS');
@@ -86,5 +92,13 @@ export class ObservationStore {
     }
     return [...groups.values()];
   }
+  list(options:queries.ListOptions={}){return queries.listObservations(this.#db,options);}
+  summary(options:queries.PageOptions={}){return queries.summary(this.#db,options);}
+  offerHistory(options:queries.PageOptions={}){return queries.offerHistory(this.#db,options);}
+  series(key:string,options:queries.PageOptions={}){return queries.series(this.#db,key,options);}
+  targets(options:{includeArchived?:boolean}={}){return watchlist.targets(this.#db,options);}
+  saveTarget(input:unknown){return watchlist.saveTarget(this.#db,input);}
+  archiveTarget(id:string,archived:boolean){return watchlist.archiveTarget(this.#db,id,archived);}
+  exportArchive(){return exportArchive(this.#db);}
   close(){this.#db.close();}
 }

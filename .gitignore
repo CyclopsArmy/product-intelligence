@@ -13,3 +13,5 @@ reports/
 __pycache__/
 .superpowers/
 .worktrees/
+backups/
+*.pi-backup.json

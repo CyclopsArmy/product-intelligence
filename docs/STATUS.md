@@ -11,7 +11,7 @@
 
 ## Known prototype limitations
 - An identical capture retried after its 24-hour validation window must use its original `--at` evaluation time. It is not treated as a fresh observation.
-- `inspect` returns all correction events for an observation; bounded event pagination is needed before long-running deployment.
+- The legacy CLI history command has a 10,000-observation guard. The local dashboard uses full SQL aggregates and bounded pages. CLI inspect and the dashboard both support bounded decision pagination.
 - Benchmark held-out labels were separated from the original development cases, but the same implementation agent authored them. They are not independent human ground truth.
 
 ## Verified publication
@@ -26,7 +26,7 @@
 - Retailer adapters: **not implemented**. JSON-LD parsing and the selected-offer interchange format are not retailer-specific adapters.
 - PostgreSQL, Docker, Crawlee, browser binaries, pg-boss scheduling: **not installed or tested** here.
 - Static TypeScript type checking: **not run**; Node's TypeScript stripping executes tests without checking types. Add a pinned compiler/lockfile once package installation is permitted.
-- Product/variant/listing relational catalog, cross-retailer matching persistence, pack-size and location-aware comparisons, private evidence archive, backup/restore, private UI, alerts, discovery, paid providers and AI: later milestones.
+- Product/variant/listing relational catalog, cross-retailer matching persistence, pack-size and location-aware comparisons, retained raw evidence archive, alerts, discovery, paid providers and AI: later milestones. A local UI and logical backup/restore are implemented below.
 
 ## Continue with minimal setup
 1. Configure a development environment with Node 24, Python 3, PostgreSQL, and permitted package/browser-download/retailer domains. This is an access/environment change, not a plugin installation.
@@ -47,3 +47,14 @@
 - Python standard-library HTMLParser avoids downloading a dependency in this restricted environment. Cost: saved-page parsing requires Python as well as Node.
 - Live acquisition is deferred rather than inventing retailer adapters or bypassing network restrictions. Cost: the primary real-world feasibility question remains open.
 - Neutral commit identity prevents publishing a personal email. Cost: initial commits are not attributed to the owner's GitHub contribution graph.
+
+## Private local application increment
+- Loopback-only Node service with per-process bearer token, exact Host/Origin validation, restrictive asset allowlist/CSP, bounded input and safe error codes.
+- Bundled responsive UI: overview, observation filters, candidate/context inspection, append-only review decisions, exact-offer history, reversible watch targets, saved JSON/HTML import, and private backup download.
+- Schema 2 adds watch targets while preserving schema-1 observations and immutable decision triggers.
+- Bounded observation/decision/timeline queries and full SQL history aggregates. Synthetic data stays excluded unless explicitly selected.
+- Versioned checksummed logical archive revalidates captures at their original evaluation time, preserves decisions and targets, and restores only into a new destination. Internal sequence cursors may change. Archives are private and unencrypted.
+- Browser validation is blocked: the cloud browser refused local app navigation with `ERR_BLOCKED_BY_CLIENT`. Source syntax, view-formatting behavior, real loopback HTTP integration, actual SQLite migration and archive round trips were tested. No rendered desktop/mobile QA or browser accessibility claim is made.
+- No paid requests, retailer requests, public deployment, scheduler, or notifications were enabled.
+
+Local verification for the private app: 140 tests, 14 synthetic benchmark expectations, JavaScript syntax checks, and a zero-finding source/history privacy scan. Independent review findings were fixed with targeted regressions, including legacy capture recovery, large archive encoding and stale detail responses. Hosted CI for this increment is checked separately during publication.

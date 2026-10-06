@@ -2,7 +2,36 @@
 
 A standalone, evidence-first price tracking prototype. Public source code is separate from private observations and configuration.
 
-**Current scope: working offline prototype.** It validates normalized captures, parses saved HTML, preserves observations and corrections in SQLite, and reports synthetic regression results. It does not fetch retailer pages, run scheduled scraping, or claim validated Best Buy/Amazon/Newegg coverage. See [status](docs/STATUS.md).
+**Current scope: private local evidence application.** It validates normalized captures, parses saved HTML, preserves observations and corrections in SQLite, and provides a local dashboard for imports, review, history, watch targets, and backups. Retailer acquisition and automated collection are not configured. Synthetic examples do not establish retailer accuracy. See [status](docs/STATUS.md).
+
+## Open the private app
+
+```bash
+npm start
+```
+
+Open the private session link printed in the terminal. The app listens only on `127.0.0.1:4317`; it cannot be exposed to your network with a host flag. Every API request needs its per-process token. The link contains that token in its fragment: do not share it or capture it in screenshots. Restarting the app creates a new session. The page removes the token from its URL and keeps it in browser session storage.
+
+The dashboard includes an overview, filtered observations, evidence details and corrections, exact-offer price history, reversible watch targets, saved-capture imports, and backup downloads. Synthetic data is hidden by default; **Load synthetic sample** enables a clearly labeled demonstration. Watch targets store a label and optional USD item-price threshold; they do not yet trigger collection or alerts.
+
+```bash
+npm start -- --db data/research.sqlite --port 4318
+```
+
+No telemetry, external fonts, third-party scripts, outbound retailer requests or public deployment is included. Use this only as a local application, not behind a public reverse proxy. The token protects against other websites, not other processes or users with access to the same operating-system account.
+
+## Backup and restore
+
+Create the private `backups` directory before exporting from the CLI, or use **Backup & recovery** in the app:
+
+```bash
+npm run cli -- backup --file backups/research.pi-backup.json --db data/observations.sqlite
+npm run cli -- restore --file backups/research.pi-backup.json --db data/restored.sqlite
+npm start -- --db data/restored.sqlite
+```
+
+Both commands refuse to overwrite existing destination files. Restore validates captures and correction events into a new database. It preserves per-observation decision order and timestamps; internal pagination cursors may change. Stop the running app before switching databases. The logical archive is checksummed, **not encrypted or authenticated**; keep it private and restore only trusted files. Export is bounded at 5,000 observations, 50,000 decisions, 1,000 watch targets and 50 MiB. Larger databases need a separately verified backup strategy before growing past those limits.
+
 
 ## Run without downloading dependencies
 
@@ -42,9 +71,9 @@ The helper extracts JSON-LD `Product`/`Offer` and same-document `@id` references
 
 ## Persistence
 
-SQLite transactions atomically insert observations and initial decisions. Re-importing identical captures is idempotent within the validation window; a later replay must supply the original `--at` time. Capture ID collisions with different content fail. Triggers reject updates/deletes of original observations and decisions. Corrections append decisions; the newest controls inclusion in history. An uncertain original cannot be manually promoted to accepted without a new validated capture. `inspect` currently returns all correction events; add pagination before long-running operation.
+SQLite transactions atomically insert observations and initial decisions. Re-importing identical captures is idempotent within the validation window; a later replay must supply the original `--at` time. Capture ID collisions with different content fail. Triggers reject updates/deletes of original observations and decisions. Corrections append decisions; the newest controls inclusion in history. An uncertain original cannot be manually promoted to accepted without a new validated capture. `inspect` returns the first 50 correction events plus the current status, total decision count and continuation cursor. Use `--limit 50 --after <nextCursor>` for further CLI pages; the dashboard also supports loading more.
 
-Histories remain partitioned by listing, exact identity, variant, seller, condition, currency, fulfillment, and eligibility. Summaries cover accepted in-stock observations only, and are labeled **lowest/highest/latest observed item price**. They are not comprehensive market history or current availability guarantees. The local history command refuses over 10,000 matching observations rather than silently returning partial statistics. Cross-retailer merging, localized prices, pack-quantity normalization, temporal weighting, and pagination require later work before production.
+Histories remain partitioned by listing, exact identity, variant, seller, condition, currency, fulfillment, and eligibility. Summaries cover accepted in-stock observations only, and are labeled **lowest/highest/latest observed item price**. They are not comprehensive market history or current availability guarantees. The legacy CLI history command refuses over 10,000 matching observations rather than returning partial statistics. The dashboard uses SQL aggregates over all matching observations and bounded offer/price-point pages. Cross-retailer merging, localized prices, pack-quantity normalization, temporal weighting, and pagination require later work before production.
 
 ## Public repository preparation
 
@@ -63,7 +92,10 @@ The GitHub workflow runs offline tests and synthetic benchmarks on standard Ubun
 | `src/engine.ts` | Accepted/uncertain/rejected evidence decisions |
 | `src/extract.ts`, `scripts/html_capture.py` | Bounded saved HTML extraction |
 | `src/store.ts` | Transactional immutable observations and correction history |
-| `src/cli.ts` | Local inspection and import commands |
+| `src/cli.ts` | Local inspection, import and recovery commands |
+| `src/queries.ts`, `src/watchlist.ts` | Paginated evidence/history and durable private targets |
+| `src/archive.ts` | Validated logical backup/restore |
+| `src/server.ts`, `src/app.ts`, `web/` | Token-protected loopback service and bundled UI |
 | `fixtures/` | Synthetic, non-personal examples and regression labels |
 | `scripts/benchmark.ts` | Labeled acceptance correctness and coverage |
 | `docs/superpowers/` | Specification and implementation plan |

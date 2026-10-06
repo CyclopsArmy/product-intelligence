@@ -1,0 +1,5 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {requestGate,archiveText} from '../web/requests.js';
+test('newer selection invalidates older request and closing cancels pending work',async()=>{const gate=requestGate();let state='closed';let first,second;const a=gate.run(()=>new Promise(r=>first=r),v=>{state=v});const b=gate.run(()=>new Promise(r=>second=r),v=>{state=v});second('new product');await b;first('old product');await a;assert.equal(state,'new product');let third;const c=gate.run(()=>new Promise(r=>third=r),v=>{state=v});const current=gate.checkpoint();assert.equal(current(),true);gate.cancel();assert.equal(current(),false);third('closed product');await c;assert.equal(state,'new product');});
+test('UI backup serialization fits the same byte budget as the archive',()=>{const data={format:'product-intelligence',observations:[{capture:{id:'example',candidates:[]},decisions:[]}],targets:[]};const text=archiveText(data);assert.ok(Buffer.byteLength(text)<=135);assert.deepEqual(JSON.parse(text),data);});
