@@ -8,6 +8,29 @@ import {chromium} from 'playwright';
 import {startApp} from '../src/server.ts';
 import {capture} from './helpers.ts';
 
+test('overlapping target operations in the same view each refresh after persistence', {timeout:30000}, async()=>{
+ const app=await startApp({dbPath:':memory:',port:0});
+ let browser;const release=Promise.withResolvers<void>(),started=Promise.withResolvers<void>();
+ try{
+  browser=await chromium.launch({channel:process.env.PI_BROWSER_CHANNEL||undefined});
+  const page=await browser.newPage();page.setDefaultTimeout(5000);
+  const created=await page.request.post(app.url+'/api/targets',{headers:{Authorization:'Bearer '+app.token},data:{url:'https://www.bestbuy.com/site/example/123.p',label:'Original target',targetMinor:null}});
+  assert.equal(created.status(),201);
+  try{await page.goto(app.url+'/#token='+app.token);}catch{throw new Error('SESSION_NAVIGATION_FAILED');}
+  await page.getByRole('navigation').getByRole('link',{name:'Watch targets',exact:true}).click();
+  await page.route('**/api/targets',async route=>{if(route.request().method()==='POST'){started.resolve();await release.promise;}await route.continue();});
+  await page.getByLabel('Label',{exact:true}).fill('Second target');
+  await page.getByLabel('Clean product URL').fill('https://www.bestbuy.com/site/example/456.p');
+  const submitted=await page.getByRole('button',{name:'Save target'}).elementHandle();
+  await page.getByRole('button',{name:'Save target'}).click();await started.promise;
+  await page.getByRole('button',{name:'Archive',exact:true}).click();
+  await page.getByRole('button',{name:'Restore target',exact:true}).waitFor();
+  release.resolve();await page.waitForFunction(button=>button instanceof HTMLButtonElement&&!button.disabled,submitted);
+  assert.equal(await page.locator('.target-item').count(),2);
+  assert.match(await page.locator('.target-item').allTextContents().then(items=>items.join(' ')),/Second target/);
+ }finally{release.resolve();await browser?.close();await app.close();}
+});
+
 test('delayed sample loading preserves subsequent navigation and synthetic filtering', {timeout:30000}, async()=>{
  const app=await startApp({dbPath:':memory:',port:0});
  let browser;const release=Promise.withResolvers<void>(),started=Promise.withResolvers<void>();
