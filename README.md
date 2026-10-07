@@ -68,6 +68,7 @@ npm run cli -- import-json --file fixtures/accepted.json --at 2026-01-15T12:00:0
 npm run cli -- inspect --id fixture-001
 npm run cli -- history
 npm run cli -- history --include-synthetic
+npm run cli -- history-page --include-synthetic --limit 50
 npm run cli -- decide --id fixture-001 --status uncertain --reason RECHECK_REQUIRED
 ```
 
@@ -95,7 +96,16 @@ The helper extracts JSON-LD `Product`/`Offer` and same-document `@id` references
 
 SQLite transactions atomically insert observations and initial decisions. Re-importing identical captures is idempotent within the validation window; a later replay must supply the original `--at` time. Capture ID collisions with different content fail. Triggers reject updates/deletes of original observations and decisions. Corrections append decisions; the newest controls inclusion in history. An uncertain original cannot be manually promoted to accepted without a new validated capture. `inspect` returns the first 50 correction events plus the current status, total decision count and continuation cursor. Use `--limit 50 --after <nextCursor>` for further CLI pages; the dashboard also supports loading more.
 
-Histories remain partitioned by listing, exact identity, variant, seller, condition, currency, fulfillment, and eligibility. Summaries cover accepted in-stock observations only, and are labeled **lowest/highest/latest observed item price**. They are not comprehensive market history or current availability guarantees. The legacy CLI history command refuses over 10,000 matching observations rather than returning partial statistics. The dashboard uses SQL aggregates over all matching observations and bounded offer/price-point pages. Cross-retailer merging, localized prices, pack-quantity normalization, temporal weighting, and pagination require later work before production.
+Histories remain partitioned by listing, exact identity, variant, seller, condition, currency, fulfillment, and eligibility. Summaries cover accepted in-stock observations only, and are labeled **lowest/highest/latest observed item price**. They are not comprehensive market history or current availability guarantees. The legacy CLI `history` command retains its array output and refuses over 10,000 matching observations. Use `history-page` for full SQL aggregates and bounded offer pages, or `series` for one offer's chronological price points, using the same queries as the dashboard:
+
+```bash
+npm run cli -- history-page --db data/observations.sqlite --limit 50
+npm run cli -- history-page --db data/observations.sqlite --limit 50 --after '<nextCursor>'
+npm run cli -- series --db data/observations.sqlite --offer-key '<offerKey>' --limit 50
+npm run cli -- series --db data/observations.sqlite --offer-key '<offerKey>' --limit 50 --after '<nextCursor>'
+```
+
+Replace the quoted placeholders with the exact JSON string values from the preceding output, using your shell's quoting rules. Both commands return `{items, nextCursor}`; `null` means no further page. Limits default to 50 and allow 1–200. Treat each cursor as opaque and use it only with its original command/filter/offer; keep `--include-synthetic` consistent across pages when explicitly enabled. Cursors and offer keys may contain private listing details. New imports or corrections can change results between calls; pagination is not a frozen snapshot. Cross-retailer merging, localized prices, pack-quantity normalization and temporal weighting require later work before production.
 
 ## Public repository preparation
 

@@ -93,9 +93,15 @@ test('rendered private workspace imports, reviews, filters, watches and recovers
 
   await navigate('Watch targets');
   await page.getByLabel('Label',{exact:true}).fill('Synthetic display');
+  await page.getByLabel('Target item price, USD (optional)').fill('90071992547409.91');
+  await page.getByLabel('Clean product URL').fill('https://www.bestbuy.com/site/example/123.p');
+  await page.getByRole('button',{name:'Save target'}).click();
+  await page.getByText('Target: $90,071,992,547,409.91',{exact:false}).waitFor();
+  await page.getByLabel('Label',{exact:true}).fill('Synthetic display');
   await page.getByLabel('Target item price, USD (optional)').fill('799.99');
   await page.getByLabel('Clean product URL').fill('https://www.bestbuy.com/site/example/123.p');
   await page.getByRole('button',{name:'Save target'}).click();
+  await page.getByText('Target: $799.99',{exact:false}).waitFor();
   await page.getByRole('button',{name:'Archive',exact:true}).click();
   await page.getByRole('button',{name:'Restore target'}).click();
   await page.getByRole('button',{name:'Archive',exact:true}).waitFor();

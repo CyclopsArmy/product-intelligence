@@ -15,7 +15,9 @@ function read(path:string, json=true, maxBytes=2*1024*1024) {
 }
 const allowed:Record<string,string[]>={
   evaluate:['file','at'], 'import-json':['file','at','db'], 'import-html':['file','metadata','at','db'],
-  backup:['file','db'],restore:['file','db'],inspect:['id','db','after','limit'],history:['include-synthetic','db'],decide:['id','status','reason','db'],help:[]
+  backup:['file','db'],restore:['file','db'],inspect:['id','db','after','limit'],history:['include-synthetic','db'],
+  'history-page':['include-synthetic','db','after','limit'],series:['offer-key','include-synthetic','db','after','limit'],
+  decide:['id','status','reason','db'],help:[]
 };
 function main() {
   const [command,...args]=process.argv.slice(2);
@@ -29,6 +31,7 @@ function main() {
     options[key]=args[++i];
   }
   const required=(key:string):string=>{if(typeof options[key]!=='string')throw new Error('MISSING_ARGUMENT');return options[key] as string;};
+  const pageNumber=(key:string)=>{if(options[key]===undefined)return undefined;const raw=required(key);if(!/^[1-9][0-9]*$/.test(raw))throw new Error('INVALID_ARGUMENT');return Number(raw);};
   const now=typeof options.at==='string'?options.at:new Date().toISOString();
   if(command==='help')return {commands:allowed,description:'Offline evidence inspection. No network requests. --at replays a historical capture at an explicit evaluation time; it does not make the price current.'};
   if(command==='evaluate')return {...evaluate(read(required('file')),now),evaluationTime:now,historicalReplay:!!options.at};
@@ -38,13 +41,18 @@ function main() {
   if(command==='import-json')input=read(required('file'));
   if(command==='import-html')input=captureHtml(read(required('file'),false) as string,read(required('metadata')) as CaptureMetadata);
   if(['inspect','decide'].includes(command))required('id');
+  if(command==='series')required('offer-key');
   if(command==='decide'){required('status');required('reason');}
   const store=new ObservationStore(typeof options.db==='string'?options.db:'data/observations.sqlite');
   try {
     if(command==='backup'){const data=store.exportArchive();try{writeFileSync(required('file'),JSON.stringify(data),{flag:'wx',mode:0o600});}catch(e){if(e instanceof Error && 'code' in e && e.code==='EEXIST')throw new Error('DESTINATION_EXISTS');throw e;}return {saved:true,observations:data.observations.length,targets:data.targets.length};}
     if(command.startsWith('import-'))return {...store.ingest(input,now),evaluationTime:now,historicalReplay:!!options.at};
-    if(command==='inspect'){const pageNumber=(key:string)=>{if(options[key]===undefined)return undefined;const raw=required(key);if(!/^[1-9][0-9]*$/.test(raw))throw new Error('INVALID_ARGUMENT');return Number(raw);};return store.inspect(required('id'),{after:pageNumber('after'),limit:pageNumber('limit')});}
+    if(command==='inspect')return store.inspect(required('id'),{after:pageNumber('after'),limit:pageNumber('limit')});
     if(command==='history')return store.history({includeSynthetic:options['include-synthetic']===true});
+    if(command==='history-page'||command==='series'){
+      const page={includeSynthetic:options['include-synthetic']===true,limit:pageNumber('limit'),after:options.after===undefined?undefined:required('after')};
+      return command==='history-page'?store.offerHistory(page):store.series(required('offer-key'),page);
+    }
     if(command==='decide')return store.decide(required('id'),required('status') as Status,required('reason'));
   }finally{store.close();}
 }

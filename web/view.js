@@ -1,5 +1,9 @@
 export const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const money=value=>Number.isSafeInteger(value)&&value>0?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(value/100):'Unknown';
+export function money(value){
+ if(!Number.isSafeInteger(value)||value<=0)return 'Unknown';
+ const minor=BigInt(value);
+ return '$'+new Intl.NumberFormat('en-US').format(minor/100n)+'.'+String(minor%100n).padStart(2,'0');
+}
 export const productName=p=>[p?.brand,p?.model??p?.mpn].filter(Boolean).join(' ')||'Unidentified product';
 export const date=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}):'Unknown';
 export const badge=(status,synthetic=false)=>`<span class="badge ${['accepted','uncertain','rejected'].includes(status)?status:''}">${escapeHTML(status)}</span>${synthetic?'<span class="badge synthetic">Synthetic</span>':''}`;
