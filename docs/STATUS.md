@@ -1,10 +1,18 @@
 # Status and continuation
 
+## Current continuation — delayed action navigation
+
+Delayed sample loading, target saves, review corrections and target archive/restore responses now respect later navigation. Completed saves still persist, but their UI refresh cannot erase a draft in a newer view; a delayed sample cannot enable synthetic data after leaving its view. Browser regressions delayed real local API responses and reproduced the wrong navigation and cleared fields before the fixes.
+
+Local verification passed **145 offline tests, five rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and the source/history privacy scan. Independent review found that internal refreshes could suppress a concurrent save's refresh; a separate gate for user navigation/filter choices fixes that regression, with a failing-then-passing browser test. Follow-up review confirmed the fix with no new actionable findings, independently running all five browser tests, five request/controller tests and four additional interaction probes. Final-head hosted checks remain required for pull request [#7](https://github.com/CyclopsArmy/product-intelligence/pull/7). This closes concrete local UI defects while M1 remains blocked on a permitted source with compatible retention; no real offer has been validated, and PostgreSQL/scheduling remain gated.
+
 ## Current continuation — exact prices and CLI history pages
 
 The dashboard preserves exact integer cents across the full supported range, including the safe-integer boundary that previously displayed one cent too low. New `history-page` and `series` CLI commands expose the existing full SQL aggregates and bounded timelines, with synthetic exclusion, correction filtering and exact-offer separation. The legacy `history` command remains compatible. Pagination uses opaque cursors and does not provide a snapshot across concurrent changes.
 
 Local verification passed **145 offline tests, two rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and a zero-finding source/history privacy scan. A real SQLite regression imports 10,001 synthetic observations and verifies complete aggregate values; the browser exercises the exact-cent boundary through the watch-target form. Independent review found no actionable issues and independently passed 14 CLI/view tests and 60,000 formatter comparisons against a string-based oracle. Pull request [#6](https://github.com/CyclopsArmy/product-intelligence/pull/6) requires final-head hosted checks before merge. Live acquisition and downstream production milestones retain their existing gates.
+
+Publication: PR #6 merged at `3dc461b` after both platform jobs and the required `test` check passed for final head `5443145`. One Windows attempt timed out in the existing session-replacement test; the parallel run, hosted retry and 20 consecutive local repetitions passed. Its cause remains unverified; no timeout or assertion was weakened.
 
 ## Current continuation — strict development type checking
 
