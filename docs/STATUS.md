@@ -4,7 +4,7 @@
 
 The dashboard preserves exact integer cents across the full supported range, including the safe-integer boundary that previously displayed one cent too low. New `history-page` and `series` CLI commands expose the existing full SQL aggregates and bounded timelines, with synthetic exclusion, correction filtering and exact-offer separation. The legacy `history` command remains compatible. Pagination uses opaque cursors and does not provide a snapshot across concurrent changes.
 
-Local verification passed **145 offline tests, two rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and a zero-finding source/history privacy scan. A real SQLite regression imports 10,001 synthetic observations and verifies complete aggregate values; the browser exercises the exact-cent boundary through the watch-target form. Independent review and final-head hosted checks are required before merge. Live acquisition and downstream production milestones retain their existing gates.
+Local verification passed **145 offline tests, two rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and a zero-finding source/history privacy scan. A real SQLite regression imports 10,001 synthetic observations and verifies complete aggregate values; the browser exercises the exact-cent boundary through the watch-target form. Independent review found no actionable issues and independently passed 14 CLI/view tests and 60,000 formatter comparisons against a string-based oracle. Pull request [#6](https://github.com/CyclopsArmy/product-intelligence/pull/6) requires final-head hosted checks before merge. Live acquisition and downstream production milestones retain their existing gates.
 
 ## Current continuation — strict development type checking
 
