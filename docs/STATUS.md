@@ -1,5 +1,11 @@
 # Status and continuation
 
+## Current continuation — delayed action navigation
+
+Delayed sample loading, target saves, review corrections and target archive/restore responses now respect later navigation. Completed saves still persist, but their UI refresh cannot erase a draft in a newer view; a delayed sample cannot enable synthetic data after leaving its view. Browser regressions delayed real local API responses and reproduced the wrong navigation and cleared fields before the fixes.
+
+Local verification passed **145 offline tests, four rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and the source/history privacy scan. Independent review and final-head hosted checks remain required. This closes concrete local UI defects while M1 remains blocked on a permitted source with compatible retention; no real offer has been validated, and PostgreSQL/scheduling remain gated.
+
 ## Current continuation — exact prices and CLI history pages
 
 The dashboard preserves exact integer cents across the full supported range, including the safe-integer boundary that previously displayed one cent too low. New `history-page` and `series` CLI commands expose the existing full SQL aggregates and bounded timelines, with synthetic exclusion, correction filtering and exact-offer separation. The legacy `history` command remains compatible. Pagination uses opaque cursors and does not provide a snapshot across concurrent changes.

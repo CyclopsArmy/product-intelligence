@@ -8,6 +8,74 @@ import {chromium} from 'playwright';
 import {startApp} from '../src/server.ts';
 import {capture} from './helpers.ts';
 
+test('delayed sample loading preserves subsequent navigation and synthetic filtering', {timeout:30000}, async()=>{
+ const app=await startApp({dbPath:':memory:',port:0});
+ let browser;const release=Promise.withResolvers<void>(),started=Promise.withResolvers<void>();
+ try{
+  browser=await chromium.launch({channel:process.env.PI_BROWSER_CHANNEL||undefined});
+  const page=await browser.newPage();page.setDefaultTimeout(5000);
+  await page.route('**/api/demo',async route=>{const response=await route.fetch();started.resolve();await release.promise;await route.fulfill({response});});
+  try{await page.goto(app.url+'/#token='+app.token);}catch{throw new Error('SESSION_NAVIGATION_FAILED');}
+  const submitted=await page.getByRole('button',{name:'Load synthetic sample'}).elementHandle();
+  await page.getByRole('button',{name:'Load synthetic sample'}).click();await started.promise;
+  await page.getByRole('navigation').getByRole('link',{name:'Import evidence',exact:true}).click();
+  await page.getByLabel('Historical evaluation time (optional)').fill('2026-01-15T12:00');
+  release.resolve();
+  // The sample remains imported, but completion must not replace the newer view.
+  await page.waitForFunction(button=>button instanceof HTMLButtonElement&&!button.disabled,submitted);
+  assert.equal(new URL(page.url()).hash,'#import');
+  assert.equal(await page.getByLabel('Include synthetic data').isChecked(),false);
+  assert.equal(await page.getByLabel('Historical evaluation time (optional)').inputValue(),'2026-01-15T12:00');
+  const result=await page.request.get(app.url+'/api/summary?synthetic=1',{headers:{Authorization:'Bearer '+app.token}});
+  assert.equal((await result.json()).total,1);
+ }finally{release.resolve();await browser?.close();await app.close();}
+});
+
+test('delayed target saves, corrections and archives preserve unsaved input in a newer view', {timeout:30000}, async()=>{
+ const app=await startApp({dbPath:':memory:',port:0});
+ let browser;const releases:ReturnType<typeof Promise.withResolvers<void>>[]=[];
+ try{
+  browser=await chromium.launch({channel:process.env.PI_BROWSER_CHANNEL||undefined});
+  const page=await browser.newPage();page.setDefaultTimeout(5000);
+  try{await page.goto(app.url+'/#token='+app.token);}catch{throw new Error('SESSION_NAVIGATION_FAILED');}
+  const navigate=async(name:string)=>{await page.getByRole('navigation').getByRole('link',{name,exact:true}).click();await page.locator('#screen[aria-busy]').waitFor({state:'detached'});};
+  const delay=async(path:string)=>{
+   const release=Promise.withResolvers<void>(),started=Promise.withResolvers<void>();releases.push(release);
+   await page.route('**/api/'+path,async route=>{if(route.request().method()!=='POST'){await route.continue();return;}const response=await route.fetch();started.resolve();await release.promise;await route.fulfill({response});});
+   return {release,started};
+  };
+  await navigate('Watch targets');
+  const target=await delay('targets');
+  await page.getByLabel('Label',{exact:true}).fill('Synthetic target');
+  await page.getByLabel('Clean product URL').fill('https://www.bestbuy.com/site/example/123.p');
+  const targetButton=await page.getByRole('button',{name:'Save target'}).elementHandle();
+  await page.getByRole('button',{name:'Save target'}).click();await target.started.promise;
+  await navigate('Import evidence');await page.getByLabel('Historical evaluation time (optional)').fill('2026-01-15T12:00');
+  target.release.resolve();await page.waitForFunction(button=>button instanceof HTMLButtonElement&&!button.disabled,targetButton);
+  assert.equal(await page.getByLabel('Historical evaluation time (optional)').inputValue(),'2026-01-15T12:00');
+  await navigate('Overview');await page.getByRole('button',{name:'Load synthetic sample'}).click();
+  await page.locator('[data-observation="fixture-001"]').click();
+  const correction=await delay('decisions');
+  const correctionButton=await page.getByRole('button',{name:'Save review decision'}).elementHandle();
+  await page.getByRole('button',{name:'Save review decision'}).click();await correction.started.promise;
+  await page.getByRole('button',{name:'Close',exact:true}).click();
+  await navigate('Watch targets');await page.getByLabel('Label',{exact:true}).fill('Unsubmitted new target');
+  correction.release.resolve();await page.waitForFunction(button=>button instanceof HTMLButtonElement&&!button.disabled,correctionButton);
+  assert.equal(await page.getByLabel('Label',{exact:true}).inputValue(),'Unsubmitted new target');
+  assert.equal(await page.locator('#detail').isVisible(),false);
+  const evidence=await page.request.get(app.url+'/api/observation?id=fixture-001',{headers:{Authorization:'Bearer '+app.token}});
+  assert.equal((await evidence.json()).currentStatus,'uncertain');
+  const archive=await delay('targets/archive');
+  const archiveButton=await page.getByRole('button',{name:'Archive',exact:true}).elementHandle();
+  await page.getByRole('button',{name:'Archive',exact:true}).click();await archive.started.promise;
+  await navigate('Import evidence');await page.getByLabel('Historical evaluation time (optional)').fill('2026-01-15T12:00');
+  archive.release.resolve();await page.waitForFunction(button=>button instanceof HTMLButtonElement&&!button.disabled,archiveButton);
+  assert.equal(await page.getByLabel('Historical evaluation time (optional)').inputValue(),'2026-01-15T12:00');
+  const targets=await page.request.get(app.url+'/api/targets?archived=1',{headers:{Authorization:'Bearer '+app.token}});
+  const saved=await targets.json();assert.equal(saved.length,1);assert.equal(saved[0].archived,true);
+ }finally{for(const release of releases)release.resolve();await browser?.close();await app.close();}
+});
+
 test('late unauthorized responses from an old session cannot revoke a new session', {timeout:30000}, async()=>{
  const app=await startApp({dbPath:':memory:',port:0});
  let browser;const release=Promise.withResolvers<void>();
