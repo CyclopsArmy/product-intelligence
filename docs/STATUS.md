@@ -1,5 +1,11 @@
 # Status and continuation
 
+## Current continuation — exact prices and CLI history pages
+
+The dashboard preserves exact integer cents across the full supported range, including the safe-integer boundary that previously displayed one cent too low. New `history-page` and `series` CLI commands expose the existing full SQL aggregates and bounded timelines, with synthetic exclusion, correction filtering and exact-offer separation. The legacy `history` command remains compatible. Pagination uses opaque cursors and does not provide a snapshot across concurrent changes.
+
+Local verification passed **145 offline tests, two rendered Edge tests, strict type checking, 14 synthetic benchmark cases**, and a zero-finding source/history privacy scan. A real SQLite regression imports 10,001 synthetic observations and verifies complete aggregate values; the browser exercises the exact-cent boundary through the watch-target form. Independent review found no actionable issues and independently passed 14 CLI/view tests and 60,000 formatter comparisons against a string-based oracle. Pull request [#6](https://github.com/CyclopsArmy/product-intelligence/pull/6) requires final-head hosted checks before merge. Live acquisition and downstream production milestones retain their existing gates.
+
 ## Current continuation — strict development type checking
 
 Pull request [#5](https://github.com/CyclopsArmy/product-intelligence/pull/5) adds pinned, strict no-emit checking for all 27 TypeScript files in `src/`, `scripts/`, and `tests/`, enforced on both CI platforms through the existing protected `test` job. The initial compiler errors in startup options, filesystem errors, query projections/cursors, and test helpers are resolved without changing the evidence acceptance rules. Fresh locked installation and a negative compiler probe also passed their checks. Local verification passed 141 offline tests, two rendered Edge tests, 14 synthetic benchmark cases, and the source/history privacy scan. Independent review found no actionable issues; hosted checks must pass for the final head before merge.
@@ -27,7 +33,7 @@ The branch adds pinned development-only Playwright tests and Ubuntu/Windows CI b
 
 ## Known prototype limitations
 - An identical capture retried after its 24-hour validation window must use its original `--at` evaluation time. It is not treated as a fresh observation.
-- The legacy CLI history command has a 10,000-observation guard. The local dashboard uses full SQL aggregates and bounded pages. CLI inspect and the dashboard both support bounded decision pagination.
+- The legacy CLI `history` command retains its 10,000-observation guard. Use `history-page` and `series` for full SQL aggregates and bounded pages, also available in the dashboard. CLI inspect and the dashboard support bounded decision pagination. The logical backup still has its separate documented export limits.
 - Benchmark held-out labels were separated from the original development cases, but the same implementation agent authored them. They are not independent human ground truth.
 
 ## Verified publication

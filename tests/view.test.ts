@@ -2,6 +2,11 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {money,escapeHTML,productName,ageLabel,priceChart,targetPrice} from '../web/view.js';
 test('unknown and invalid money stays unknown while cents format exactly',()=>{assert.equal(money(null),'Unknown');assert.equal(money(undefined),'Unknown');assert.equal(money(NaN),'Unknown');assert.equal(money(89999),'$899.99');assert.equal(money(1),'$0.01');});
+test('money preserves every cent at the safe integer boundary',()=>{
+ for(const [minor,formatted] of [[9007199254740991,'$90,071,992,547,409.91'],[9007199254740990,'$90,071,992,547,409.90'],[9007199254740989,'$90,071,992,547,409.89'],[100,'$1.00']] as const)assert.equal(money(minor),formatted);
+ for(const invalid of [0,-1,1.5,Infinity,Number.MAX_SAFE_INTEGER+1,'1999'])assert.equal(money(invalid),'Unknown');
+ assert.match(priceChart([{priceMinor:9007199254740991,observedAt:'2026-01-15T12:00:00.000Z'}]),/90,071,992,547,409\.91/);
+});
 test('untrusted product and markup content is escaped as plain text',()=>{assert.equal(escapeHTML('<img src=x onerror="x">&'), '&lt;img src=x onerror=&quot;x&quot;&gt;&amp;');assert.equal(productName({brand:'Example',model:'DISPLAY-27'}),'Example DISPLAY-27');assert.equal(productName({}),'Unidentified product');});
 test('freshness labels never turn old or future observations into current prices',()=>{const now='2026-10-06T00:00:00.000Z';assert.equal(ageLabel('2026-01-01T00:00:00.000Z',now),'Historical observation');assert.equal(ageLabel('2026-10-05T23:00:00.000Z',now),'Observed within 24 hours');assert.equal(ageLabel('2026-10-07T00:00:00.000Z',now),'Future observation time');assert.equal(ageLabel('bad',now),'Unknown observation time');});
 test('history chart handles empty and flat series without invalid coordinates',()=>{assert.match(priceChart([]),/No price points/);let chart=priceChart([{priceMinor:89999,observedAt:'2026-01-01T00:00:00.000Z'}]);assert.doesNotMatch(chart,/NaN|Infinity/);assert.match(chart,/svg/);assert.match(chart,/899.99/);});
